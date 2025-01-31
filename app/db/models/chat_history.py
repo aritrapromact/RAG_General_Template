@@ -11,7 +11,6 @@ from sqlalchemy.sql import func
 class Conversation(Base):
     __tablename__ = "conversation"    
     conversation_id = Column(Integer, primary_key= True,autoincrement=True)
-    conversation_title = Column(String(100), nullable= False)
     user_id =  Column(Integer, ForeignKey('user.user_id'), nullable=False)
     history = Column(JSON, nullable=False)
     user = relationship('User', back_populates='conversation')
