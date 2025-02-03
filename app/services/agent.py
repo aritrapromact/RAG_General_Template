@@ -3,29 +3,30 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain_groq import ChatGroq
 from langchain_core.tools import tool
 from app.config.settings import GROQ_API_KEY,GROQ_MODEL_NAME
-
-
+from langchain_core.documents import Document
+from typing import List
 from app.services.tools import fetch_search_results
-from pydantic import BaseModel
+from app.services.tools.vectorstore import vector_search_order
+
+from app.services.prompts import default_str_template_prompt
+
+AGENT_CONFIG = {"configurable": {"thread_id": 42}}
 # Define the tools for the agent to use
 @tool
-def deep_search_and_filter(query: str):
-    """Call to surf the web."""
-    # This is a placeholder, but don't tell the LLM that...
-    if "sf" in query.lower() or "san francisco" in query.lower():
-        return "Temperature is 42 degree"
+def deep_search_and_filter(query: str) -> List[Document]:
+    """Call to surf the web. and get Detailed Content """
+    outline_data = vector_search_order(query)
+    return outline_data
 
-    return "It's 90 degrees and sunny."
-
-@tool 
-def shallow_search_result(query:str):
+@tool
+def shallow_search_result(query:str) ->str:
     """Shallow Web Search Yools 
     Using given Query search on web and return the basic outline information of each web site
     Useful when there is very little search information required """
     outline_data = fetch_search_results(query)
-    return "\n".join (result['body'] for result in outline_data)
+    return [{"page_content": doc.page_content, "metadata": doc.metadata} for doc in outline_data]
 
-tools = [shallow_search_result,deep_search_and_filter]
+tools = [deep_search_and_filter]
 
 model = ChatGroq(model=GROQ_MODEL_NAME, temperature=0, api_key=GROQ_API_KEY)
 

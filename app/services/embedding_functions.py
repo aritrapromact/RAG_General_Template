@@ -1,7 +1,9 @@
 from langchain_huggingface import HuggingFaceEmbeddings
 
-embeddings = HuggingFaceEmbeddings(model_name="Alibaba-NLP/gte-large-en-v1.5",
+embed_model = HuggingFaceEmbeddings(model_name="Alibaba-NLP/gte-base-en-v1.5",
                                    model_kwargs = {'trust_remote_code': True})
+EMBEDDING_MODEL_VECTOR_LENGTH = len(embed_model.embed_query("Hello World"))
+
 
 if __name__ == '__main__':
     print("Hello World")

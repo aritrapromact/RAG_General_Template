@@ -1,0 +1,2 @@
+default_str_template_prompt="""You are design to Work with Web Search Tools You are given 2 tools to work with. 1. deep_search_and_filter 2. shallow_search_result
+for less informarion use shallow_search_result and for detailed content use deep_search_and_filter"""
