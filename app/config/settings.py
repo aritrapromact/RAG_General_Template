@@ -38,3 +38,33 @@ SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{PO
 
 GROQ_API_KEY = load_env_var_strict('GROQ_INFERENCE_API_KEY')
 GROQ_MODEL_NAME  = "mixtral-8x7b-32768"
+
+
+
+### Database Configuration
+
+from app.config.settings import SQLALCHEMY_DATABASE_URL
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+# # SQLite setup
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+print(SQLALCHEMY_DATABASE_URL)
+# # Postgres setup
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# BASE ORM Model 
+Base = declarative_base()
+
+Base.metadata.create_all(bind=engine) 
+
+# DB Utilities 
+def get_session():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

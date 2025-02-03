@@ -26,7 +26,7 @@ def shallow_search_result(query:str) ->str:
     outline_data = fetch_search_results(query)
     return [{"page_content": doc.page_content, "metadata": doc.metadata} for doc in outline_data]
 
-tools = [deep_search_and_filter]
+tools = [shallow_search_result]
 
 model = ChatGroq(model=GROQ_MODEL_NAME, temperature=0, api_key=GROQ_API_KEY)
 

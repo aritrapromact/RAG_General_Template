@@ -3,7 +3,7 @@ Database ORM models for users.
 """
 from sqlalchemy import (Column, Integer, String, Boolean, DateTime)
 from sqlalchemy.orm import relationship
-from app.db.base import Base
+from app.config.settings import Base
 from sqlalchemy.sql import func
 
 '''This module contains All the SQLAlchemy Database Schemas or Model

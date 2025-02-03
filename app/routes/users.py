@@ -9,7 +9,7 @@ from typing import Annotated
 # Custom 
 from app.db import  models
 from app.schemas import user as schemas
-from app.db.base import get_session
+from app.config.settings import get_session
 from app.config.settings import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.core.auth import( is_email_or_username_taken,get_current_user,
         create_access_token, get_password_hash,authenticate_user)

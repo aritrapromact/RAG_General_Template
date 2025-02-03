@@ -12,7 +12,7 @@ app = FastAPI()
 app.include_router(user_route)
 app.include_router(conversation_routes)
 
-from app.db.base import Base, get_session, engine
+from app.config.settings import Base, get_session, engine
 
 Base.metadata.create_all(bind=engine) 
 

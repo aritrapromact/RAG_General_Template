@@ -9,7 +9,7 @@ from pydantic import EmailStr
 from jose import JWTError, jwt
 from typing import Annotated
 from app.db.models.user import User
-from app.db.base import Base, get_session
+from app.config.settings import Base, get_session
 from app.config.settings import JWT_AUTH_SECRET_KEY,ALGORITHM
 from datetime import timedelta,timezone,datetime
 from app.core import constants as core_constant

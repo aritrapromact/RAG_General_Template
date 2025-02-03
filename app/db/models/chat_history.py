@@ -2,7 +2,7 @@
 
 from sqlalchemy import (Column, ForeignKey, Integer, String, JSON)
 from sqlalchemy.orm import relationship
-from app.db.base import Base
+from app.config.settings import Base
 from sqlalchemy.sql import func
 
 '''This module contains All the SQLAlchemy Database Schemas or Model
