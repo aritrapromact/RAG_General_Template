@@ -6,9 +6,19 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 def fetch_search_results(query: str, max_results: int = 5) -> List[Dict[str, str]]:
-    """Fetch search results from DuckDuckGo."""
-    dgs = ddg.DDGS()
-    return dgs.text(query, max_results=max_results)
+    """Fetch search results from Tavly Search."""
+    search_url = f"https://api.tavly.com/search?q={query}&num={max_results}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    try:
+        response = requests.get(search_url, headers=headers, timeout=10)
+        response.raise_for_status()
+        results = response.json().get("results", [])
+        return [{"href": result["url"], "title": result["title"]} for result in results]
+    except requests.RequestException as e:
+        print(f"Error fetching search results: {e}")
+        return []
 
 def extract_text_from_url(url: str) -> str:
     """Fetch and extract main text content from a given URL."""

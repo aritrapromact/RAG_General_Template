@@ -2312,6 +2312,7 @@ dependencies = [
     { name = "ruff" },
     { name = "sentence-transformers" },
     { name = "sqlalchemy" },
+    { name = "tavily-python" },
     { name = "tiktoken" },
     { name = "uvicorn" },
 ]
@@ -2348,6 +2349,7 @@ requires-dist = [
     { name = "ruff", specifier = ">=0.9.3" },
     { name = "sentence-transformers", specifier = ">=3.4.1" },
     { name = "sqlalchemy", specifier = ">=2.0.37" },
+    { name = "tavily-python", specifier = ">=0.5.0" },
     { name = "tiktoken", specifier = ">=0.8.0" },
     { name = "uvicorn", specifier = ">=0.34.0" },
 ]
@@ -2707,6 +2709,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ca/99/5a5b6f19ff9f083671ddf7b9632028436167cd3d33e11015754e41b249a4/sympy-1.13.1.tar.gz", hash = "sha256:9cebf7e04ff162015ce31c9c6c9144daa34a93bd082f54fd8f12deca4f47515f", size = 7533040 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b2/fe/81695a1aa331a842b582453b605175f419fe8540355886031328089d840a/sympy-1.13.1-py3-none-any.whl", hash = "sha256:db36cdc64bf61b9b24578b6f7bab1ecdd2452cf008f34faa33776680c26d66f8", size = 6189177 },
+]
+
+[[package]]
+name = "tavily-python"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+    { name = "requests" },
+    { name = "tiktoken" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ca/50/7f4acafe72ffd10d3578ddec76f993af5af81504bc7315ea54862f2705b9/tavily_python-0.5.0.tar.gz", hash = "sha256:2c60b88203b630e1b37fc711913a1090ced6719b3f21089f25ec06e9e1602822", size = 16455 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/90/99/05776f7150a5b3f8d853377144a3a634131964c0fce38307537674a9a674/tavily_python-0.5.0-py3-none-any.whl", hash = "sha256:e874f6a04a56cdda80a505fe0b4f5d61d25372bd52a83e6773926fb297dcaa29", size = 14361 },
 ]
 
 [[package]]

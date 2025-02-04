@@ -38,13 +38,12 @@ else:
     # SQLite Database Configuration
     SQLALCHEMY_DATABASE_URL = f"sqlite:///{BASE_DIR}/db.sqlite3"
 
-# ORM Engine Configuration
-
+## Loading Environments Variable
 GROQ_API_KEY = load_env_var_strict('GROQ_INFERENCE_API_KEY')
+TAVILY_API_KEY = load_env_var_strict('TAVILY_API_KEY')
 GROQ_MODEL_NAME  = "mixtral-8x7b-32768"
-
+# ORM Engine Configuration
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False} if DB_TYPE == "sqlite" else {})
-
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base ORM Model
@@ -58,3 +57,6 @@ def get_session():
         yield db
     finally:
         db.close()
+
+
+AGENT_CONFIG_RUNABLE = {"thread_id": 42}
