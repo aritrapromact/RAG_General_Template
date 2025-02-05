@@ -11,7 +11,7 @@ from app.core.auth import get_current_user
 from app.services.agent import agent_executor
 from app.routes.constants import RoutingPoints, RoutingCategory, ErrorMessages
 from app.schemas.chat import Query, ChatResponse
-
+from app.services.agent import get_resource_from_agent_response 
 
 conversation_routes = APIRouter()
 
@@ -62,7 +62,8 @@ async def ask_question(query:Query, current_user: Annotated[UserSchema,Depends(g
     ]
    
     chat_history_json = [chat.model_dump() for chat in chat_history]
-    source_reference = response.get("intermediate_steps")[0][1]
+    source_reference = get_resource_from_agent_response(response)
+
     conversation = Conversation(user_id=current_user.user_id , history=chat_history_json, )     
     session.add(conversation)
     session.commit()
@@ -82,7 +83,7 @@ async def ask_question(conversation_id : int, query:Query, current_user: Annotat
             "chat_history": chat_history
         }
     )
-    source_reference = response.get("intermediate_steps")[0][1]
+    source_reference = get_resource_from_agent_response(response)
     chat_history += [
         HumanMessage(content=response['input']),
         AIMessage(content=response['output'])

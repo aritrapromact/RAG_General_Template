@@ -37,8 +37,7 @@ def shallow_search_result(query:str) ->str:
     Useful when there is very little search information required """
     outline_data = fetch_search_results(query)
     return outline_data
-tool_list= [tavily_search_tools]
-
+tool_list= [deep_search_and_filter,shallow_search_result]
 
 
 

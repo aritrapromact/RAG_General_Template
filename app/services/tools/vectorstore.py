@@ -5,7 +5,7 @@ import faiss
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
 
-from app.services.embedding_functions import embed_model,EMBEDDING_MODEL_VECTOR_LENGTH
+from app.config.settings import embed_model,EMBEDDING_MODEL_VECTOR_LENGTH
 from app.services.tools.search import  get_web_scrap_documents
 index = faiss.IndexFlatL2(EMBEDDING_MODEL_VECTOR_LENGTH)
 

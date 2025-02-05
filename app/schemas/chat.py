@@ -6,5 +6,5 @@ class Query(BaseModel):
 
 class ChatResponse(BaseModel):
     answer:str
-    references : List[dict]
+    references : List[dict] | None 
     conversation_id:int
