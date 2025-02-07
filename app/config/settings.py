@@ -8,7 +8,6 @@ from dotenv import main
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
 from pydantic import SecretStr
 main.load_dotenv()
 
@@ -52,6 +51,7 @@ Base.metadata.create_all(bind=engine)
 
 # DB Utilities
 def get_session():
+    ''' Return Database ORM Session Object'''
     db = SessionLocal()
     try:
         yield db
@@ -63,13 +63,14 @@ AGENT_CONFIG_RUNABLE = {"thread_id": 42}
 
 
 
-### LLM Model Configuration 
-LLM_PROVIDER = load_env_var_strict('LLM_PROVIDER')
+### LLM Model Configuration
+LLM_PROVIDER=load_env_var_strict('LLM_PROVIDER')
 if LLM_PROVIDER=='groq':
     GROQ_API_KEY = load_env_var_strict('GROQ_INFERENCE_API_KEY')
     GROQ_MODEL_NAME  = "mixtral-8x7b-32768"
     from langchain_groq import ChatGroq
-    default_llm_model = ChatGroq(model=GROQ_MODEL_NAME, temperature=0.3, api_key=SecretStr(GROQ_API_KEY))
+    default_llm_model = ChatGroq(model=GROQ_MODEL_NAME,
+            temperature=0.3, api_key=SecretStr(GROQ_API_KEY))
 
 elif LLM_PROVIDER=='azure_openai':
     OPENAI_MODEL_NAME = 'gpt-4o'
@@ -78,11 +79,11 @@ elif LLM_PROVIDER=='azure_openai':
     default_llm_model = AzureChatOpenAI(model_name="gpt-4o" )
 
 EMBEDDING_MODEL_PROVIDER = load_env_var_strict('EMBEDDING_MODEL_PROVIDER')
-# Embedding Model Configuration 
+# Embedding Model Configuration
 if EMBEDDING_MODEL_PROVIDER=="azure_openai":
     model_name=load_env_var_strict('OPENAI_EMBEDDING_MODEL_NAME')
-    from langchain_openai import AzureOpenAIEmbeddings 
-    embed_model = AzureOpenAIEmbeddings(model=model_name)    
+    from langchain_openai import AzureOpenAIEmbeddings
+    embed_model = AzureOpenAIEmbeddings(model=model_name)
     EMBEDDING_MODEL_VECTOR_LENGTH=int(load_env_var_strict("EMBEDDING_DIMENTION"))
 else:
     from langchain_huggingface import HuggingFaceEmbeddings

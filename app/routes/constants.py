@@ -14,5 +14,7 @@ class RoutingCategory:
 
 class ErrorMessages:
     EMAIL_ALREADY_TAKEN = 'email is already taken'
+    USERNAME_ALREADY_TAKEN = 'username is already taken'
+    ALREADY_TAKEN = "{} is already Taken"
     INCORRECT_CREDENTIALS = "Incorrect username or password"
     CONVERSATION_NOT_EXIST= 'Conversation not exist'

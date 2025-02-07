@@ -7,20 +7,15 @@ from langchain_core.tools import tool
 from langchain_community.tools.tavily_search import TavilySearchResults
 from app.services.tools.vectorstore import vector_search_order
 from app.services.tools.search import fetch_search_results
+from enum import StrEnum
 # from app.services.prompts import default_str_template_prompt
 
 
 tavily_search_tools =TavilySearchResults(
     max_results=10,
     search_depth="advanced",
-    # include_answer=True,
     include_raw_content=True,
     include_images=True,
-    # include_domains=[...],
-    # exclude_domains=[...],
-    # name="...",            # overwrite default tool name
-    # description="...",     # overwrite default tool description
-    # args_schema=...,       # overwrite default args_schema: BaseModel
 )
 
 @tool
@@ -40,5 +35,11 @@ def shallow_search_result(query:str) ->str:
 tool_list= [deep_search_and_filter,shallow_search_result]
 
 
+
+
+class ToolSetName(StrEnum):
+    SHALLOW_SEARCH_RESULT=shallow_search_result.name
+    DEEP_SEARCH_AND_FILTER=deep_search_and_filter.name
+    TAVILY_SEARCH_TOOLS=tavily_search_tools.name 
 
 

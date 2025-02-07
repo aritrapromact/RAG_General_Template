@@ -64,7 +64,7 @@ async def ask_question(query:Query, current_user: Annotated[UserSchema,Depends(g
     chat_history_json = [chat.model_dump() for chat in chat_history]
     source_reference = get_resource_from_agent_response(response)
 
-    conversation = Conversation(user_id=current_user.user_id , history=chat_history_json, )     
+    conversation = Conversation(user_id=current_user.user_id , history=chat_history_json)
     session.add(conversation)
     session.commit()
     session.refresh(conversation)
@@ -75,7 +75,7 @@ async def ask_question(conversation_id : int, query:Query, current_user: Annotat
                 session:Session=Depends(get_session)):
     conversation = session.query(Conversation).filter(
             Conversation.conversation_id==conversation_id and
-            Conversation.user_id == current_user.user_id).first()    
+            Conversation.user_id == current_user.user_id).first()
     chat_history = conversation.history
     response = agent_executor.invoke(
         {

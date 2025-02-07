@@ -4,14 +4,14 @@ Defines authentication-related API endpoints.
 from fastapi import Depends,HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from sqlalchemy.orm import Session 
-from pydantic import EmailStr 
+from sqlalchemy.orm import Session
+from pydantic import EmailStr
 from jose import JWTError, jwt
+from datetime import timedelta,timezone,datetime
 from typing import Annotated
 from app.db.models.user import User
 from app.config.settings import Base, get_session
 from app.config.settings import JWT_AUTH_SECRET_KEY,ALGORITHM
-from datetime import timedelta,timezone,datetime
 from app.core import constants as core_constant
 from app import constants as global_constant
 from app.schemas.auth import TokenEncode
@@ -27,21 +27,20 @@ def is_email_or_username_taken(email: EmailStr,
     input:
         email : Email String
         model : model or table where to check
-        session : SQLAlchemy Database Session Utility 
-    return str: 
-        return 'email' if email exist 
-        return 'username' if username exist 
-        return None for new user 
+        session : SQLAlchemy Database Session Utility
+    return str:
+        return 'email' if email exist
+        return 'username' if username exist
+        return None for new user
     '''
     existing_object = session.query(model).filter_by(email=email).first()
-    if existing_object  : 
-        return core_constant.USER_ID.EMAIL 
+    if existing_object:
+        return core_constant.USER_ID.EMAIL
     existing_object = session.query(model).filter_by(username=username).first()
     if existing_object:
         return core_constant.USER_ID.USERNAME
     return False
-    
-## Helper Functions 
+## Helper Functions
 def verify_password(plain_password, hashed_password):
     """Password Verification by converting Hash"""
     return pwd_context.verify(plain_password, hashed_password)
@@ -84,9 +83,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],session
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-    except JWTError:
-        raise credentials_exception
+    except JWTError as e:
+        raise credentials_exception from e
     if user := session.query(User).filter_by(username=username).first():
         return user
     raise credentials_exception
-    

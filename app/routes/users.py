@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 # System
 from datetime import timedelta
 from typing import Annotated
-# Custom 
+# Custom
 from app.db import  models
 from app.schemas import user as schemas
 from app.config.settings import get_session
@@ -19,11 +19,11 @@ from app.routes.constants import RoutingPoints, RoutingCategory, ErrorMessages
 user_route = APIRouter()
 
 @user_route.post(RoutingPoints.CREATE_USER, tags=[RoutingCategory.AUTH])
-async def create(user:schemas.UserCreate,  session:Session = Depends(get_session)):    
+async def create(user:schemas.UserCreate,  session:Session = Depends(get_session)):
     if validate_entity := is_email_or_username_taken(user.email,user.username, models.user.User,session):
-        raise HTTPException(status_code=400, detail=f'{validate_entity} is already taken')    
+        raise HTTPException(status_code=400, detail=ErrorMessages.ALREADY_TAKEN.format(validate_entity))
     new_user = models.user.User(email = user.email,username= user.username,
-                        _password_hash = get_password_hash(user.password) )  
+                        _password_hash = get_password_hash(user.password) )
     session.add(new_user)
     session.commit()
     session.refresh(new_user)
@@ -33,8 +33,8 @@ async def create(user:schemas.UserCreate,  session:Session = Depends(get_session
     return Token(access_token=access_token, token_type=global_constant.TokenType.BEARER)
 @user_route.post(RoutingPoints.LOGIN_USER, tags=[RoutingCategory.AUTH] )
 async def login_for_access_token(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
-        session: Session = Depends(get_session) 
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+        session: Session = Depends(get_session)
     ) -> Token:
     user = authenticate_user(form_data.username, form_data.password, session)
     if not user:
