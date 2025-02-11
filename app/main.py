@@ -3,8 +3,11 @@ Main FastAPI application file.
 Define your FastAPI app and include routers here.
 """
 from fastapi import FastAPI
-from app.routes.users import user_route 
+
+from app.config.settings import Base, engine
 from app.routes.conversation import conversation_routes
+from app.routes.users import user_route
+
 app = FastAPI()
 
 # Include your routers here
@@ -12,12 +15,13 @@ app = FastAPI()
 app.include_router(user_route)
 app.include_router(conversation_routes)
 
-from app.config.settings import Base, get_session, engine
 
-Base.metadata.create_all(bind=engine) 
+
+Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 async def root():
+    '''Root Endpoint'''
     return {"message": "View /docs for Documentation "}
 
 if __name__ == "__main__":

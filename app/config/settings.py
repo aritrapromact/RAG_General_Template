@@ -4,11 +4,13 @@ such as environment variables and constants.
 """
 import os
 from pathlib import Path
+
 from dotenv import main
+from pydantic import SecretStr
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from pydantic import SecretStr
+
 main.load_dotenv()
 
 def load_env_var_strict(name: str) -> str:
@@ -60,9 +62,10 @@ def get_session():
 
 
 AGENT_CONFIG_RUNABLE = {"thread_id": 42}
-
-
-
+DEFAULT_INDEX_PATH = load_env_var_strict("DEFAULT_INDEX_PATH")
+DEFAULT_INDEX_PATH = BASE_DIR/DEFAULT_INDEX_PATH
+RELEVENCY_CHECK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+RELEVENCY_SCORE_THRESH=0.7
 ### LLM Model Configuration
 LLM_PROVIDER=load_env_var_strict('LLM_PROVIDER')
 if LLM_PROVIDER=='groq':

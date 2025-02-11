@@ -1,21 +1,22 @@
 """
 Defines authentication-related API endpoints.
 """
-from fastapi import Depends,HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
-from sqlalchemy.orm import Session
-from pydantic import EmailStr
-from jose import JWTError, jwt
-from datetime import timedelta,timezone,datetime
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
-from app.db.models.user import User
-from app.config.settings import Base, get_session
-from app.config.settings import JWT_AUTH_SECRET_KEY,ALGORITHM
-from app.core import constants as core_constant
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from pydantic import EmailStr
+from sqlalchemy.orm import Session
+
 from app import constants as global_constant
-from app.schemas.auth import TokenEncode
+from app.config.settings import ALGORITHM, JWT_AUTH_SECRET_KEY, Base, get_session
+from app.core import constants as core_constant
+from app.db.models.user import User
 from app.routes.constants import RoutingPoints
+from app.schemas.auth import TokenEncode
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=RoutingPoints.LOGIN_USER)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -55,7 +56,8 @@ def authenticate_user(username: str, password: str, session:Session):
     """Authenticated an user"""
     if user := session.query(User).filter_by(username=username).first():
         return user if verify_password(password, user._password_hash) else False
-    else: return False
+    else:
+        return False
 
 
 def create_access_token(data: TokenEncode, expires_delta: timedelta | None = None):
@@ -68,8 +70,6 @@ def create_access_token(data: TokenEncode, expires_delta: timedelta | None = Non
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     data.exp  = expire
     return  jwt.encode(data.model_dump(), JWT_AUTH_SECRET_KEY, algorithm=ALGORITHM)
-
-
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],session:Session=Depends(get_session)):
     """Authenticate user and return current user if authentication success"""

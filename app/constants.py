@@ -5,3 +5,4 @@ class TokenType(StrEnum):
     BEARER="bearer"
 
 GEBNERAL_TYPE_ERROR="data must be a {} model"
+ALLOWED_FILE_TYPES = ['pdf','docx']
