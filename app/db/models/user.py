@@ -1,17 +1,17 @@
 """
 Database ORM models for users.
 """
-from sqlalchemy import (Column, Integer, String, Boolean, DateTime)
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
+
 from app.config.settings import Base
-from sqlalchemy.sql import func
 
 '''This module contains All the SQLAlchemy Database Schemas or Model
 '''
 
-    
 
-class User(Base): 
+
+class User(Base):
     __tablename__ = "user"
     user_id = Column(Integer, primary_key= True,autoincrement=True)
     username =  Column(String(100),unique=True,nullable=False)

@@ -1,20 +1,21 @@
 
-from typing import Any 
 import json
-from sentence_transformers import CrossEncoder
+from typing import Any
+
 from langfuse.callback import CallbackHandler
+from sentence_transformers import CrossEncoder
 
 from app.config.logging_config import logger
 from app.config.settings import (
+    LANGFUSE_CONFIG,
     RELEVENCY_CHECK_MODEL,
     RELEVENCY_SCORE_THRESH,
     default_llm_model,
 )
+from app.constants import LoggingMessages
+from app.services.RAG.document_parser import context_parser_input, context_parser_output
 from app.services.RAG.prompts import default_template_prompt
 from app.services.RAG.vectorstore import similarity_search
-from app.constants import LoggingMessages
-from app.config.settings import LANGFUSE_CONFIG
-from app.services.RAG.document_parser import context_parser_input, context_parser_output
 
 langfuse_handler = CallbackHandler(**LANGFUSE_CONFIG)
 def get_relevent_chunks(llm_response:Any, retrieved_chunks:Any):
@@ -59,7 +60,7 @@ def get_llm_response(query:str, user_id: str):
     llm_answer = response_json['answer']
     relevent_chunks = response_json ['relevent_chunks']
     # resource = get_relevent_chunks(response,retrieved_chunks)
-    
+
     logger.info(LoggingMessages.LLM_RESPONSE_RECIEVED)
 
     return ({

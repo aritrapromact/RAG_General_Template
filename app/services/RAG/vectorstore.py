@@ -2,17 +2,21 @@ from pathlib import Path
 from typing import List
 
 import faiss
-from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
-from app.config.settings import EMBEDDING_MODEL_VECTOR_LENGTH, embed_model, DEFAULT_INDEX_PATH
 from app.config.logging_config import logger
+from app.config.settings import (
+    DEFAULT_INDEX_PATH,
+    EMBEDDING_MODEL_VECTOR_LENGTH,
+    embed_model,
+)
 from app.constants import LoggingMessages
 from app.routes.constants import ErrorMessages
 
 index = faiss.IndexFlatL2(EMBEDDING_MODEL_VECTOR_LENGTH)
 import faiss
+
 
 def validate_index_path(index_path: str | Path | None):
     """
@@ -31,7 +35,7 @@ def validate_index_path(index_path: str | Path | None):
         if not index_path.exists():
             raise Exception(ErrorMessages.INDEX_NOT_FOUND)
     return index_path
-    
+
 def save_on_vector_store(documents : List[Document], user_id: str, index_path:str|Path|None=DEFAULT_INDEX_PATH) :
     """
     Save documents to a FAISS vector store.
@@ -44,7 +48,7 @@ def save_on_vector_store(documents : List[Document], user_id: str, index_path:st
     user_id = str(user_id)
     if index_path and not isinstance(index_path,Path):
         index_path= Path(index_path).resolve()
-    if (index_path/user_id).exists() :       
+    if (index_path/user_id).exists() :
         faiss_store = FAISS.load_local(index_path/user_id, embed_model,allow_dangerous_deserialization=True)
         faiss_store.add_documents(documents)
     else:
@@ -69,7 +73,7 @@ def similarity_search(query:str,  user_id: str, index_path: str|Path|None = DEFA
     results = faiss_store.similarity_search(query, k=3)
     return results
 
-def get_retriver( user_id: str, index_path: str|Path|None = DEFAULT_INDEX_PATH): 
+def get_retriver( user_id: str, index_path: str|Path|None = DEFAULT_INDEX_PATH):
     user_id = str(user_id)
     index_path = validate_index_path(index_path/user_id)
     result = FAISS.load_local(index_path.as_posix(), embed_model,allow_dangerous_deserialization=True).as_retriever()

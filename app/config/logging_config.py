@@ -2,7 +2,9 @@
 This file defines the logging configuration for the application.
 """
 import logging
+
 import colorlog
+
 
 def create_console_handler():
     """

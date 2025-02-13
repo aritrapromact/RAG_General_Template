@@ -1,13 +1,12 @@
 '''This is the Prompt List'''
 
-from langchain.prompts.chat import MessagesPlaceholder
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 default_template_prompt = PromptTemplate.from_template(
     """
     You are an AI assistant tasked with answering user questions based on the provided\
         context in form of tags where metadata is also mentioned as properties of Tags. \
-        Context are enclosed by <context> </context> tag. 
+        Context are enclosed by <context> </context> tag.
     As a response Write your answer in following Json format.
     Response Format :
 

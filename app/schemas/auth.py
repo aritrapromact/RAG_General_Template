@@ -1,12 +1,15 @@
 """
 Pydantic schemas for auth-related operations.
 """
-from pydantic import BaseModel
 from datetime import datetime
+
+from pydantic import BaseModel
+
+
 class SessionData(BaseModel):
     username: str
-    
-    
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str

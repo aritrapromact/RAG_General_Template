@@ -6,7 +6,7 @@ Functions:
 '''
 import io
 import re
-from typing import List, Dict
+from typing import Dict, List
 from uuid import uuid4
 
 import pymupdf
@@ -87,7 +87,7 @@ def context_parser_output(contexts:List[str] ) -> Dict[str, str | dict]:
             - "metadata": A dictionary of extracted metadata attributes as key-value pairs.
     """
     content_pattern = re.compile(r"<context(.*?)>(.*?)</context>", re.DOTALL)
-    if not  isinstance(contexts, list): 
+    if not  isinstance(contexts, list):
         contexts = [contexts]
     context_list = []
     for context in contexts:

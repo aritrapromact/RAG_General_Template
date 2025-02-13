@@ -56,7 +56,7 @@ LANGFUSE_CONFIG = {
     'host': LANGFUSE_HOST
 }
 from langfuse.callback import CallbackHandler
-from langfuse.decorators import observe
+
 langfuse_handler = CallbackHandler(**LANGFUSE_CONFIG)
 
 
@@ -116,4 +116,4 @@ else:
 
     # embed_model.embed_documents = observe(as_type="generation")(embed_model.embed_documents)
     # embed_model.embed_query = observe(as_type="generation")(embed_model.embed_query)
-print(dir(embed_model)) 
+print(dir(embed_model))
