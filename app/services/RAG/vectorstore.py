@@ -6,10 +6,14 @@ from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
-from app.config.settings import EMBEDDING_MODEL_VECTOR_LENGTH, embed_model
-from app.config.settings import DEFAULT_INDEX_PATH
+from app.config.settings import EMBEDDING_MODEL_VECTOR_LENGTH, embed_model, DEFAULT_INDEX_PATH
+from app.config.logging_config import logger
+from app.constants import LoggingMessages
+from app.routes.constants import ErrorMessages
+
 index = faiss.IndexFlatL2(EMBEDDING_MODEL_VECTOR_LENGTH)
 import faiss
+
 def validate_index_path(index_path: str | Path | None):
     """
     Validates the provided index path.
@@ -20,24 +24,22 @@ def validate_index_path(index_path: str | Path | None):
     Raises:
     Exception: If the index_path is None.
     """
-    
     if index_path is None :
-        raise Exception("Index Not Found")
+        raise Exception(ErrorMessages.INDEX_NOT_FOUND)
     elif not isinstance(index_path,Path):
         index_path = Path(index_path).resolve()
         if not index_path.exists():
-            raise Exception("Index Not Found")
-        
+            raise Exception(ErrorMessages.INDEX_NOT_FOUND)
     return index_path
     
 def save_on_vector_store(documents : List[Document], user_id: str, index_path:str|Path|None=DEFAULT_INDEX_PATH) :
     """
-        Save documents to a FAISS vector store.
-        Parameters:
-        documents (List[Document]): A list of documents to be added to the vector store.
-        index_path (str | Path | None): The path to the existing FAISS index. If None, a new index will be created.
-        Returns:
-        None
+    Save documents to a FAISS vector store.
+    Parameters:
+    documents (List[Document]): A list of documents to be added to the vector store.
+    index_path (str | Path | None): The path to the existing FAISS index. If None, a new index will be created.
+    Returns:
+    None
     """
     user_id = str(user_id)
     if index_path and not isinstance(index_path,Path):
@@ -48,17 +50,18 @@ def save_on_vector_store(documents : List[Document], user_id: str, index_path:st
     else:
         faiss_store = FAISS.from_documents(documents, embed_model)
     faiss_store.save_local((index_path/user_id).as_posix())
+    logger.info(LoggingMessages.FUNCTION_END)
 
 def similarity_search(query:str,  user_id: str, index_path: str|Path|None = DEFAULT_INDEX_PATH)-> List[Document]:
     """
-        Perform a similarity search on the given query using the specified index path.
-        Args:
-            query (str): The query string to search for.
-            index_path (str | Path | None, optional): The path to the index file. Defaults to DEFAULT_INDEX_PATH.
-        Returns:
-            List[Document]: A list of documents that are similar to the query.
-        Raises:
-            Exception: If the index_path is None.
+    Perform a similarity search on the given query using the specified index path.
+    Args:
+        query (str): The query string to search for.
+        index_path (str | Path | None, optional): The path to the index file. Defaults to DEFAULT_INDEX_PATH.
+    Returns:
+        List[Document]: A list of documents that are similar to the query.
+    Raises:
+        Exception: If the index_path is None.
     """
     user_id = str(user_id)
     index_path = validate_index_path(index_path/user_id)
@@ -69,5 +72,5 @@ def similarity_search(query:str,  user_id: str, index_path: str|Path|None = DEFA
 def get_retriver( user_id: str, index_path: str|Path|None = DEFAULT_INDEX_PATH): 
     user_id = str(user_id)
     index_path = validate_index_path(index_path/user_id)
-    return FAISS.load_local(index_path.as_posix(), embed_model,allow_dangerous_deserialization=True).as_retriever()
-    
+    result = FAISS.load_local(index_path.as_posix(), embed_model,allow_dangerous_deserialization=True).as_retriever()
+    return result

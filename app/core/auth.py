@@ -63,7 +63,7 @@ def authenticate_user(username: str, password: str, session:Session):
 def create_access_token(data: TokenEncode, expires_delta: timedelta | None = None):
     """Create Access Token usning Openssl Secret key """
     if not isinstance(data, TokenEncode):
-        raise TypeError(global_constant.GEBNERAL_TYPE_ERROR.format(type(TokenEncode)))
+        raise TypeError(global_constant.GENERAL_TYPE_ERROR.format(type(TokenEncode)))
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:

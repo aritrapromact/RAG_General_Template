@@ -23,3 +23,5 @@ class ErrorMessages:
     ALREADY_TAKEN = "{} is already Taken"
     INCORRECT_CREDENTIALS = "Incorrect username or password"
     CONVERSATION_NOT_EXIST= 'Conversation not exist'
+    EMPTY_FILENAME_ERROR="File name is empty"
+    INDEX_NOT_FOUND= "Index is not found"

@@ -43,6 +43,23 @@ else:
 ## Loading Environments Variable
 TAVILY_API_KEY = load_env_var_strict('TAVILY_API_KEY')
 
+
+
+LANGFUSE_SECRET_KEY = load_env_var_strict('LANGFUSE_SECRET_KEY')
+LANGFUSE_PUBLIC_KEY = load_env_var_strict('LANGFUSE_PUBLIC_KEY')
+LANGFUSE_HOST = os.getenv('LANGFUSE_HOST', 'http://localhost:3000')
+
+# Langfuse Configuration
+LANGFUSE_CONFIG = {
+    'secret_key': LANGFUSE_SECRET_KEY,
+    'public_key': LANGFUSE_PUBLIC_KEY,
+    'host': LANGFUSE_HOST
+}
+from langfuse.callback import CallbackHandler
+from langfuse.decorators import observe
+langfuse_handler = CallbackHandler(**LANGFUSE_CONFIG)
+
+
 # ORM Engine Configuration
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False} if DB_TYPE == "sqlite" else {})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -88,9 +105,15 @@ if EMBEDDING_MODEL_PROVIDER=="azure_openai":
     from langchain_openai import AzureOpenAIEmbeddings
     embed_model = AzureOpenAIEmbeddings(model=model_name)
     EMBEDDING_MODEL_VECTOR_LENGTH=int(load_env_var_strict("EMBEDDING_DIMENTION"))
+    # embed_model.embed_documents = observe(as_type="generation")(embed_model.embed_documents)
+    # embed_model.embed_query = observe(as_type="generation")(embed_model.embed_query)
 else:
     from langchain_huggingface import HuggingFaceEmbeddings
 
     embed_model = HuggingFaceEmbeddings(model_name="Alibaba-NLP/gte-base-en-v1.5",
                                     model_kwargs = {'trust_remote_code': True})
     EMBEDDING_MODEL_VECTOR_LENGTH = len(embed_model.embed_query("Hello World"))
+
+    # embed_model.embed_documents = observe(as_type="generation")(embed_model.embed_documents)
+    # embed_model.embed_query = observe(as_type="generation")(embed_model.embed_query)
+print(dir(embed_model)) 

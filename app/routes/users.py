@@ -8,7 +8,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app import constants as global_constant
+from app.config.logging_config import logger
 from app.config.settings import ACCESS_TOKEN_EXPIRE_MINUTES, get_session
+from app.constants import LoggingMessages
 from app.core.auth import (
     authenticate_user,
     create_access_token,
@@ -39,13 +41,13 @@ async def create(user:schemas.UserCreate,  session:Session = Depends(get_session
     access_token = create_access_token(
         data=TokenEncode(sub = user.username), expires_delta=access_token_expires)
     return Token(access_token=access_token, token_type=global_constant.TokenType.BEARER)
+
 @user_route.post(RoutingPoints.LOGIN_USER, tags=[RoutingCategory.AUTH] )
 async def login_for_access_token(
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
         session: Session = Depends(get_session)
     ) -> Token:
     '''Return Access Token for Login User '''
-
     user = authenticate_user(form_data.username, form_data.password, session)
     if not user:
         raise HTTPException(
@@ -61,14 +63,18 @@ async def login_for_access_token(
 
 @user_route.get(RoutingPoints.GET_USER, response_model=schemas.User,tags=[RoutingCategory.VIEW])
 async def read_users_me(current_user: Annotated[schemas.User,Depends(get_current_user)]):
-    return current_user
+    result = current_user
+    return result
 
 @user_route.post(RoutingPoints.UPLOAD_DOCUMENT, tags=[RoutingCategory.UPLOAD])
-async def upload_file( current_user: Annotated[schemas.User,Depends(get_current_user)],file: UploadFile = File(...)):
+async def upload_file( current_user: Annotated[schemas.User,Depends(get_current_user)],
+                      file: UploadFile = File(...)):
     if not file.filename :
-        raise HTTPException(status_code=400, detail="File name is empty")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=ErrorMessages.EMPTY_FILENAME_ERROR)
     documents = parse_documents(await file.read(), file.filename, file.content_type,
         file_metadata={'user_name':current_user.username})
+    logger.info(LoggingMessages.EMBEDDING_STARTED%file.filename)
     save_on_vector_store(documents,current_user.user_id)
+    logger.info(LoggingMessages.EMBEDDING_ENDED%file.filename)
     return {'message':'File uploaded and Index successfully'}
-
