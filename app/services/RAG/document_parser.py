@@ -97,7 +97,7 @@ def context_parser_output(contexts:List[str] ) -> Dict[str, str | dict]:
         # Extract attributes as key-value pairs
         attributes_pattern = re.compile(r"(\w+)=\"(.*?)\"")
         attributes = dict(attributes_pattern.findall(attributes_part))
-    context_list.append( {
+        context_list.append( {
         "content": content,
         "metadata": attributes})
 

@@ -54,14 +54,14 @@ async def ask_question(query:Query, current_user: Annotated[UserSchema,Depends(g
 
     chat_history += [
         HumanChat(content=response['query']),
-        AIChat(content=response['answer'],resources=response['references'])
+        AIChat(content=response['answer'],resources=response['resource'])
     ]
     chat_history_json = [chat.model_dump() for chat in chat_history]
     conversation = Conversation(user_id=current_user.user_id , history=chat_history_json)
     session.add(conversation)
     session.commit()
     session.refresh(conversation)
-    return ChatResponse(answer=response['answer'], references= response['references'], conversation_id=conversation.conversation_id)
+    return ChatResponse(answer=response['answer'], references= response['resource'], conversation_id=conversation.conversation_id)
 
 
 
@@ -77,7 +77,7 @@ async def ask_question(conversation_id : int, query:Query,
     response = get_llm_response(query.question, current_user.user_id)
     chat_history = [
         HumanChat(content=response['query']),
-        AIChat(content=response['answer'],resources=response['references'])
+        AIChat(content=response['answer'],resources=response['resource'])
     ]
     chat_history_json +=  [chat.model_dump() for chat in chat_history]
     conversation.history = chat_history_json
@@ -85,5 +85,5 @@ async def ask_question(conversation_id : int, query:Query,
     session.commit()
     session.refresh(conversation)
     return ChatResponse(answer=response['answer'],
-                        references=response['references'],
+                        references=response['resource'],
                         conversation_id=conversation.conversation_id)
