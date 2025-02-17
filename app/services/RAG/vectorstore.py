@@ -15,7 +15,7 @@ from app.constants import LoggingMessages
 from app.routes.constants import ErrorMessages
 
 index = faiss.IndexFlatL2(EMBEDDING_MODEL_VECTOR_LENGTH)
-import faiss
+
 
 
 def validate_index_path(index_path: str | Path | None):

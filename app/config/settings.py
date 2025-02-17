@@ -19,6 +19,7 @@ def load_env_var_strict(name: str) -> str:
     if value is None:
         raise ValueError(f"Environment variable {name} is not set")
     return value
+
 ## Loading Environment Variables
 JWT_AUTH_SECRET_KEY = load_env_var_strict('JWT_AUTH_SECRET_KEY')
 ALGORITHM = "HS256"
@@ -105,8 +106,6 @@ if EMBEDDING_MODEL_PROVIDER=="azure_openai":
     from langchain_openai import AzureOpenAIEmbeddings
     embed_model = AzureOpenAIEmbeddings(model=model_name)
     EMBEDDING_MODEL_VECTOR_LENGTH=int(load_env_var_strict("EMBEDDING_DIMENTION"))
-    # embed_model.embed_documents = observe(as_type="generation")(embed_model.embed_documents)
-    # embed_model.embed_query = observe(as_type="generation")(embed_model.embed_query)
 else:
     from langchain_huggingface import HuggingFaceEmbeddings
 
@@ -114,6 +113,3 @@ else:
                                     model_kwargs = {'trust_remote_code': True})
     EMBEDDING_MODEL_VECTOR_LENGTH = len(embed_model.embed_query("Hello World"))
 
-    # embed_model.embed_documents = observe(as_type="generation")(embed_model.embed_documents)
-    # embed_model.embed_query = observe(as_type="generation")(embed_model.embed_query)
-print(dir(embed_model))
