@@ -16,6 +16,15 @@ A FastAPI project for creating applications using the Retrieval-Augmented Genera
   - Install Dependencies : `pip install -r requirements.txt`
   - Run Projects :`uvicorn main:app --reload`
 
+
+## Additional Setup Information 
+
+* Database : 
+  - Setup Postgresql Database in your local or Server and add Cred into .env file or Environment Variable 
+  - Setup the DB_TYPE variable with database name `postgres`
+* Monitoring Tool : 
+  - Use **Langfuse** as monitoring Tools add Langfuse config on env 
+  - Setup langfuse on Docker  or use langfuse cloud url : [text](https://cloud.langfuse.com/)
 ## Folder Structure
 
 ```plaintext
