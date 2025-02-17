@@ -8,13 +8,13 @@ A FastAPI project for creating applications using the Retrieval-Augmented Genera
   - As this Project is uv Dependent it will be very easy to run projects with uv. This required installed uv in your global environment.
   - Install UV via PIP :`pip install uv` 
   - Install uv Directly : `powershell -c "irm https://astral.sh/uv/install.ps1 | more"`
-  - Run Projects :`uv run uvicorn main:app --reload`
+  - Run Projects :`uv run uvicorn app.main:app --reload`
 
 * Run Project Without uv :
   - Create Python Virtual env using venv : `python -m venv env`
   - Activate Virtual env : `.\env\Scripts\activate`
   - Install Dependencies : `pip install -r requirements.txt`
-  - Run Projects :`uvicorn main:app --reload`
+  - Run Projects :`uvicorn app.main:app --reload`
 
 
 ## Additional Setup Information 
