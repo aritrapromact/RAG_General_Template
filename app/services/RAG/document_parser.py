@@ -1,7 +1,11 @@
 '''
 This module provides functionality to parse PDF documents and extract text from each page.
 Functions:
-    parse_documents(file_content: bytes, filename: str | None = 'unknown', filetype: str = 'pdf') -> list:
+    parse_documents (
+        file_content: bytes,
+        filename: str | None = 'unknown',
+        filetype: str = 'pdf'
+    ) -> list:
 
 '''
 import io
@@ -17,7 +21,10 @@ from app.config.logging_config import logger
 from app.constants import LoggingMessages
 
 
-def parse_documents(file_content:bytes, filename:str | None = 'unknown', filetype:str='pdf', file_metadata:dict = {}):
+def parse_documents(file_content:bytes,
+                    filename:str | None = 'unknown',
+                    filetype:str='pdf',
+                    file_metadata:dict = Dict):
     """
         Parses the content of a PDF document from bytes and extracts text from each page.
         Args:
@@ -59,11 +66,14 @@ def parse_documents(file_content:bytes, filename:str | None = 'unknown', filetyp
 def context_parser_input(documents:List[Document])->str :
 
     """
-    Parses a list of Document objects into a list of context strings formatted in XML-like tags.
+    Parses a list of Document objects into a list of context strings
+    formatted in XML-like tags.
     Args:
-        documents (List[Document]): A list of Document objects, each containing metadata and page content.
+        documents (List[Document]): A list of Document objects,
+        each containing metadata and page content.
     Returns:
-        List[str]: A list of strings, each representing a document's content wrapped in a context tag with metadata attributes.
+        List[str]: A list of strings, each representing a document's
+        content wrapped in a context tag with metadata attributes.
     """
 
     context_template = '<context {metadata}> {page_content} </context>\n'

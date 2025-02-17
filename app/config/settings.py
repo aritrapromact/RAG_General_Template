@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 
 from dotenv import main
+from langfuse.callback import CallbackHandler
 from pydantic import SecretStr
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -36,7 +37,8 @@ if DB_TYPE == "postgres":
     POSTGRES_PASSWORD = load_env_var_strict('POSTGRES_PASSWORD')
     POSTGRES_HOST = load_env_var_strict('POSTGRES_HOST')
     POSTGRES_PORT = load_env_var_strict('POSTGRES_PORT')
-    SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
+    SQLALCHEMY_DATABASE_URL = \
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
 else:
     # SQLite Database Configuration
     SQLALCHEMY_DATABASE_URL = f"sqlite:///{BASE_DIR}/db.sqlite3"
@@ -56,13 +58,17 @@ LANGFUSE_CONFIG = {
     'public_key': LANGFUSE_PUBLIC_KEY,
     'host': LANGFUSE_HOST
 }
-from langfuse.callback import CallbackHandler
+
 
 langfuse_handler = CallbackHandler(**LANGFUSE_CONFIG)
 
 
 # ORM Engine Configuration
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False} if DB_TYPE == "sqlite" else {})
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False} if DB_TYPE == "sqlite" else {}
+)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base ORM Model
@@ -108,8 +114,6 @@ if EMBEDDING_MODEL_PROVIDER=="azure_openai":
     EMBEDDING_MODEL_VECTOR_LENGTH=int(load_env_var_strict("EMBEDDING_DIMENTION"))
 else:
     from langchain_huggingface import HuggingFaceEmbeddings
-
     embed_model = HuggingFaceEmbeddings(model_name="Alibaba-NLP/gte-base-en-v1.5",
                                     model_kwargs = {'trust_remote_code': True})
     EMBEDDING_MODEL_VECTOR_LENGTH = len(embed_model.embed_query("Hello World"))
-

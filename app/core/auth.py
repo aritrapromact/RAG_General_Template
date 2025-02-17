@@ -9,10 +9,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import DeclarativeMeta, Session
 
 from app import constants as global_constant
-from app.config.settings import ALGORITHM, JWT_AUTH_SECRET_KEY, Base, get_session
+from app.config.settings import ALGORITHM, JWT_AUTH_SECRET_KEY, get_session
 from app.core import constants as core_constant
 from app.db.models.user import User
 from app.routes.constants import RoutingPoints
@@ -23,7 +23,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def is_email_or_username_taken(email: EmailStr,
-            username:str, model:Base , session:Session ) -> bool | str:
+            username:str, model:DeclarativeMeta , session:Session ) -> bool | str:
     '''check in database the given email is already exist or not
     input:
         email : Email String
@@ -36,10 +36,10 @@ def is_email_or_username_taken(email: EmailStr,
     '''
     existing_object = session.query(model).filter_by(email=email).first()
     if existing_object:
-        return core_constant.USER_ID.EMAIL
+        return core_constant.UserID.EMAIL
     existing_object = session.query(model).filter_by(username=username).first()
     if existing_object:
-        return core_constant.USER_ID.USERNAME
+        return core_constant.UserID.USERNAME
     return False
 ## Helper Functions
 def verify_password(plain_password, hashed_password):
@@ -52,12 +52,12 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def authenticate_user(username: str, password: str, session:Session):
+def authenticate_user(username: str, password: str, session:Session)-> User | None:
     """Authenticated an user"""
     if user := session.query(User).filter_by(username=username).first():
-        return user if verify_password(password, user._password_hash) else False
+        return user if verify_password(password, user.password_hash) else False
     else:
-        return False
+        return None
 
 
 def create_access_token(data: TokenEncode, expires_delta: timedelta | None = None):
@@ -71,7 +71,10 @@ def create_access_token(data: TokenEncode, expires_delta: timedelta | None = Non
     data.exp  = expire
     return  jwt.encode(data.model_dump(), JWT_AUTH_SECRET_KEY, algorithm=ALGORITHM)
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],session:Session=Depends(get_session)):
+async def get_current_user(
+        token: Annotated[str, Depends(oauth2_scheme)],
+        session: Annotated[Session, Depends(get_session)]
+    ):
     """Authenticate user and return current user if authentication success"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

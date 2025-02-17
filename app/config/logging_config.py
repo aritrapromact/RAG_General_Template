@@ -13,9 +13,12 @@ def create_console_handler():
     Returns:
         logging.StreamHandler: A console handler for logging.
 
-    This function creates a console handler for logging. It sets the log level to DEBUG and configures a colored formatter
-    with custom log colors for different log levels. The formatter formats the log message with the log color, timestamp,
-    logger name, log level, and message. The function then sets the formatter on the console handler and returns it.
+    This function creates a console handler for logging. It sets the
+    log level to DEBUG and configures a colored formatterwith custom
+    log colors for different log levels. The formatter formats the
+    log message with the log color, timestamp, logger name, log level,
+    and message. The function then sets the formatter on the console
+    handler and returns it.
     """
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG)
@@ -46,27 +49,31 @@ def get_logger(name: str):
     Returns:
         logging.Logger: A logger object with the specified name.
 
-    This function creates a logger object with the specified name and sets its log level to the value of the 
-    environment variable. It also adds a console handler and a Seq handler (if enabled) to the logger. If file logging is
-    enabled, it adds a file handler to the logger. The function returns the logger object.
+    This function creates a logger object with the specified name
+    and sets its log level to the value of the environment variable.
+    It also adds a console handler and a Seq handler (if enabled) to
+    the logger. If file logging is enabled, it adds a file handler
+    to the logger. The function returns the logger object.
     """
-    logger = logging.getLogger(name)
+    _logger = logging.getLogger(name)
 
     # if not logger.handlers:
-    logger.setLevel("INFO")
+    _logger.setLevel("INFO")
     console_handler = create_console_handler()
 
-    logger.addHandler(console_handler)
-    return logger
+    _logger.addHandler(console_handler)
+    return _logger
 
 
 def log_startup_to_console():
     """
     Logs the startup information to the console.
 
-    This function creates a logger object for the "startup" name and sets its log level to the value of the 
-    environment variable. It then logs the value of  using the info level. If seq_enabled() returns True,
-    it logs "Seq log enabled". If file_enabled() returns True, it logs "File logging enabled".
+    This function creates a logger object for the "startup" name and sets
+    its log level to the value of the environment variable. It then logs the
+    value of  using the info level. If seq_enabled() returns True, it logs
+    "Seq log enabled". If file_enabled() returns True, it logs "File logging
+    enabled".
 
     Returns:
         None
