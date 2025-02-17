@@ -11,7 +11,7 @@ default_template_prompt = PromptTemplate.from_template(
     Response Format :
 
     "answer" : "Write your answer here",
-    "relevent_chunks" : "List of allchunks. Write all exact chunks as provided in a list that are actually used to generate the answer"
+    "relevent_chunks" : "List of all chunks. Write all exact chunks as provided in a list that are actually used to generate the answer with there proper format with all the information of that chunk."
 
 
     If the context does not contain relevant information, respond with \
